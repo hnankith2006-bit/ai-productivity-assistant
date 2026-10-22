@@ -1,273 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Productivity Assistant</title>
-    <style>
-      :root {
-        --bg: #0f172a;
-        --panel: #111827;
-        --panel-light: #1f2937;
-        --primary: #8b5cf6;
-        --primary-dark: #7c3aed;
-        --muted: #94a3b8;
-        --text: #e5e7eb;
-        --accent: #34d399;
-      }
+# Ankith | AI Builder & Product Engineer
 
-      * { box-sizing: border-box; }
+This project is a personal portfolio and AI productivity landing page designed to be deployed as a public website for `ankith.com`.
 
-      body {
-        margin: 0;
-        font-family: Inter, Arial, sans-serif;
-        background: linear-gradient(135deg, #020817, #111827 40%, #1e1b4b);
-        color: var(--text);
-        min-height: 100vh;
-      }
+## Features
+- Modern portfolio homepage
+- AI assistant demo integration
+- FastAPI backend for product demos and API responses
+- Deployment-ready structure for Render and Docker
 
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 32px 20px 48px;
-      }
+## Run locally
 
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-      }
+```bash
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
 
-      .brand {
-        font-size: 1.8rem;
-        font-weight: 700;
-      }
+Then open:
 
-      .status {
-        background: rgba(52, 211, 153, 0.12);
-        border: 1px solid rgba(52, 211, 153, 0.6);
-        color: #d1fae5;
-        padding: 8px 14px;
-        border-radius: 999px;
-        font-size: 0.9rem;
-      }
+```text
+http://localhost:8000
+```
 
-      .layout {
-        display: grid;
-        grid-template-columns: 320px 1fr;
-        gap: 24px;
-      }
+## Deploy to Render
 
-      .panel {
-        background: rgba(17, 24, 39, 0.9);
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 20px 40px rgba(15, 23, 42, 0.35);
-      }
+1. Push this repo to GitHub.
+2. Import the repo into Render.
+3. Use the included `render.yaml` or create a web service.
+4. Set environment variables if using OpenAI:
+   - `OPENAI_API_KEY`
+   - `OPENAI_MODEL=gpt-4o-mini`
+5. Add your custom domain: `ankith.com`
+6. Update DNS records as shown by Render and enable SSL.
 
-      .task-list h3, .assistant h3 {
-        margin-top: 0;
-        margin-bottom: 14px;
-        font-size: 1.05rem;
-      }
+## Domain launch checklist for ankith.com
 
-      .task-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(31, 41, 55, 0.8);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 12px;
-        padding: 12px 14px;
-        margin-bottom: 10px;
-      }
+- Buy the domain from a registrar such as Namecheap, Cloudflare, or GoDaddy
+- Point DNS to your hosting provider
+- Add the custom domain in the deploy platform dashboard
+- Configure SSL certificate
+- Test the live site and verify redirects
 
-      .task-name {
-        font-size: 0.95rem;
-        color: var(--text);
-      }
+## Files
+- `app/main.py` — FastAPI backend and AI chat endpoint
+- `static/index.html` — Personal landing page
+- `render.yaml` — Render deployment configuration
+- `Dockerfile` — Docker deployment template
 
-      .pill {
-        background: rgba(139, 92, 246, 0.15);
-        color: #ddd6fe;
-        border: 1px solid rgba(139, 92, 246, 0.4);
-        border-radius: 999px;
-        padding: 4px 8px;
-        font-size: 0.75rem;
-      }
-
-      .assistant {
-        display: flex;
-        flex-direction: column;
-        min-height: 540px;
-      }
-
-      .chat-box {
-        flex: 1;
-        background: rgba(15, 23, 42, 0.72);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 16px;
-        padding: 18px;
-        overflow-y: auto;
-        margin-bottom: 16px;
-      }
-
-      .message {
-        max-width: 75%;
-        padding: 12px 16px;
-        border-radius: 16px;
-        margin-bottom: 12px;
-        line-height: 1.5;
-      }
-
-      .message.user {
-        background: var(--primary);
-        margin-left: auto;
-      }
-
-      .message.ai {
-        background: rgba(30, 41, 59, 0.8);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-      }
-
-      .prompt-row {
-        display: flex;
-        gap: 10px;
-      }
-
-      input[type="text"] {
-        flex: 1;
-        border: 1px solid rgba(148, 163, 184, 0.2);
-        background: rgba(15, 23, 42, 0.8);
-        color: var(--text);
-        padding: 14px 16px;
-        border-radius: 12px;
-        font-size: 1rem;
-      }
-
-      button {
-        border: none;
-        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-        color: white;
-        border-radius: 12px;
-        padding: 13px 18px;
-        font-size: 1rem;
-        cursor: pointer;
-        font-weight: 600;
-      }
-
-      button:hover { filter: brightness(1.08); }
-
-      .quick-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 14px;
-      }
-
-      .quick-action {
-        background: rgba(15, 23, 42, 0.7);
-        color: var(--text);
-        border: 1px solid rgba(148, 163, 184, 0.15);
-        border-radius: 999px;
-        padding: 8px 12px;
-        cursor: pointer;
-        font-size: 0.85rem;
-      }
-
-      @media (max-width: 880px) {
-        .layout {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <div class="brand">AI Productivity Assistant</div>
-        <div class="status">Online</div>
-      </div>
-
-      <div class="layout">
-        <aside class="panel task-list">
-          <h3>Today’s priorities</h3>
-          <div class="task-item"><span class="task-name">Design landing page</span><span class="pill">High</span></div>
-          <div class="task-item"><span class="task-name">Review product notes</span><span class="pill">Medium</span></div>
-          <div class="task-item"><span class="task-name">Schedule follow-up</span><span class="pill">Low</span></div>
-        </aside>
-
-        <main class="panel assistant">
-          <h3>Assistant</h3>
-          <div class="chat-box" id="chat-box">
-            <div class="message ai">Hi! I can help you plan your day, summarize notes, draft messages, or break work into tasks. What do you need?</div>
-          </div>
-
-          <div class="prompt-row">
-            <input id="prompt-input" type="text" placeholder="Ask for a plan, summary, or task breakdown..." />
-            <button id="send-btn">Send</button>
-          </div>
-
-          <div class="quick-actions">
-            <button class="quick-action" data-prompt="Plan my day">Plan my day</button>
-            <button class="quick-action" data-prompt="Summarize my notes">Summarize notes</button>
-            <button class="quick-action" data-prompt="Draft a quick email">Draft email</button>
-          </div>
-        </main>
-      </div>
-    </div>
-
-    <script>
-      const chatBox = document.getElementById('chat-box');
-      const input = document.getElementById('prompt-input');
-      const sendBtn = document.getElementById('send-btn');
-
-      const addMessage = (text, sender = 'ai') => {
-        const div = document.createElement('div');
-        div.className = `message ${sender}`;
-        div.textContent = text;
-        chatBox.appendChild(div);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      };
-
-      const sendPrompt = async () => {
-        const message = input.value.trim();
-        if (!message) return;
-
-        addMessage(message, 'user');
-        input.value = '';
-
-        try {
-          const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              message,
-              tasks: ['Design landing page', 'Review product notes', 'Schedule follow-up']
-            })
-          });
-
-          if (!response.ok) throw new Error('Request failed');
-          const data = await response.json();
-          addMessage(data.reply, 'ai');
-        } catch (error) {
-          addMessage('Something went wrong while contacting the assistant. Please try again.', 'ai');
-        }
-      };
-
-      sendBtn.addEventListener('click', sendPrompt);
-      input.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') sendPrompt();
-      });
-
-      document.querySelectorAll('.quick-action').forEach((button) => {
-        button.addEventListener('click', () => {
-          input.value = button.dataset.prompt;
-          sendPrompt();
-        });
-      });
-    </script>
-  </body>
-</html>
+## License
+MIT
