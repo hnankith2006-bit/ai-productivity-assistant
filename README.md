@@ -1,2 +1,2 @@
-# ai-productivity-assistant
-Simple AI productivity assistant starter project with FastAPI backend and web UI
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
